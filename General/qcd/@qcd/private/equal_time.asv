@@ -1,0 +1,16 @@
+function [ tf ] = equal_time( varargin )
+%EQUAL_TIME Summary of this function goes here
+%   Detailed explanation goes here
+
+
+
+
+
+
+
+
+
+
+
+end
+
