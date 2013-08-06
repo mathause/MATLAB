@@ -1,5 +1,9 @@
 *.mat
+*.asv
 
+matlab2tikz*
+
+pathdef.m
 finish.m
 startup.m
-*.asv
+
