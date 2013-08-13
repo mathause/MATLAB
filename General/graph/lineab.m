@@ -1,14 +1,37 @@
-function lineab(a, b)
-
+function h = lineab(a, b, varargin)
+%LINEAB plots a straight line on a plot
+%
+%Syntax
+%   lineab()
+%   lineab(a)
+%   lineab(a, b)
+%   lineab(a, b, LineSpec, ...)
+%   lineab(a, b, ..., 'PropertyName',PropertyValue, ...)
+%   h = lineab(...)
+%
+%Usage
+%   lineab() plots a horizontal line through the origin. Uses Xlim to
+%      determine the length of the line .
+%   lineab(a) plots a line with intercept a
+%   lineab(a, b) plots a line with intercept a and slope b
+%   lineab(a, b, LineSpec, ...) dito specifing the LineSpec (see plot)
+%   lineab(a, b, ..., 'PropertyName',PropertyValue, ...) dito, specifing
+%      property-value pairs of plot
+%   h = lineab(...) also returns the handle of the line
+%
+%Version History
+%   07.08.2013  mah     created
+%   13.08.2013  mah     docs
 
 
 if nargin == 0
-   b = 0;
-   a = 0;
+    b = 0;   a = 0;
 elseif nargin == 1
-%    b = a;
-%    a = 0;
-b = 0;
+    b = 0;
+end
+
+if nargin < 3
+    varargin = {'k'};
 end
 
 
@@ -19,24 +42,15 @@ if ~ih
 end
 
 
-h = gca;
-xlim = get(h, 'XLim');
-
-% dx = diff(xlim);
-% 
-% assb(dx, xlim)
-% 
-% xlim(1) = xlim(1)*(1+dx/100);
-% xlim(2) = xlim(2)*(1-dx/100);
-% 
-% assb(xlim, 'xlmin')
+hax = gca;
+xlim = get(hax, 'XLim');
 
 
-% xlim(1) = xlim(1) + eps;
-% xlim(2) = xlim(2) - 2;
-
-h = plot( xlim, a + xlim*b, 'k');
-
+if nargout > 0
+    h = plot( xlim, a + xlim*b, varargin{:});
+else
+    plot( xlim, a + xlim*b, varargin{:});
+end
 %uistack(h, 'bottom')
 
 
