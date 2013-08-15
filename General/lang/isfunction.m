@@ -1,52 +1,72 @@
-function [tf] = isfunction( fct )
+function tf = isfunction( fct )
 %isfunction true for functions (false for scripts)
 %
+%Syntax
+%   tf = isfunction( fct )
 %
+%Usage
+%   tf = isfunction( fct ) determines if fct is a function or a script
 %
-% 11.06.2013 Mathias Hauser     created
+%Input
+%   fct     can be a string (e.g. 'max') or a function handle (e.g. @max)
+%
+%Example
+%   tf = isfunction(@isfunction)
+%   tf = isfunction('name_of_script')
+%
+%With ideas from
+%   http://stackoverflow.com/questions/15910210/
+%
+%TO DO
+%   use which instead of exist(?)
+%
+%Version History
+%   11.06.2013 Mathias Hauser   created
+%   15.08.2013 Mathias Hauser   using nargin(fct), p-files, function_handle
+%
+%See Also
+% function | script | function_handle
 
-if any( strcmp(fct, '.'))
-    if strcmp(fct(end-1:end), '.m' )        
+
+if isa( fct, 'function_handle')
+    %using 'functions(fct)' could be better, however its use is discuraged
+    fct = func2str(fct);
+    assert( ~strcmp(fct(1), '@'), 'isfct:anonymous_fct', 'Anonymous Function')
+end
+
+assert(ischar(fct), 'isFct:not_str_or_fcn_hdl', ...
+    'Input must be a string or a function handle.')
+
+
+if strfind(fct, '.')
+    if any(strcmp(fct(end-1:end), {'.m', '.p'} ))
     else
-        error('Wrong File ending')
+        error('isfct:wrngFileEnd', 'Wrong File ending')
     end
-else
-    fct = [fct '.m'];
 end
 
 
-%[fullName, pathstr, FileName] = getMfile(varargin)
+kind = exist( fct );
 
-
-%'function' in ascii code see char(fc)
-fc = [102   117   110    99   116   105   111   110];
-
-
-kind = exist( fct, 'file');
-
+tf = true;
 switch kind
     
     case 0
-        error('isfunction:not_ex', 'The file fct (%s) does not exist', fct);
-    case 2
-        fid = fopen( fct );
-        str = fread(fid, [1 8]);
-        tf = isequal(str, fc);
-        
-    case {3,4,5,6}
-        tf = true;
+        error('isfunction:not_ex', 'The file %s does not exist', fct);
+    case {2, 6} %m and p files
+        try
+            nargin(fct);
+        catch err
+            % If nargin throws an error and the error message does not match the specific one for script, then the input is neither script nor function.
+            if( strcmp( err.identifier, 'MATLAB:nargin:isScript' ) )
+                tf = false;
+            end
+        end
+
+     case 5 %built-in function
     otherwise
-        tf = false;
-        
+        tf = false; 
 end
-
-
-
-
-
-
-
-
 
 
 end
