@@ -15,7 +15,7 @@ max_size = [Mb, Mb, Inf, Mb];
 
 exclude{1} = {'pictures', 'movies'};
 exclude{2} = {'Last scripts_201303', 'data_for_extern', '.git'};
-exclude{3} = {'Examples', '*.log', '*.aux', '*.bbl', '*.toc', '*.gz', '*.out', '*.bak'};
+exclude{3} = {'Examples', '*.log', '*.aux', '*.bbl', '*.toc', '*.gz', '*.out', '*.bak', '*.blg'};
 exclude{4} = {};
 
 
