@@ -8,6 +8,7 @@ elseif ~isqcd(a)
     obj = b;
     val = a;        
 else %both are qcd
+    assert(~ (isempty(a) | isempty(b)), 'qcd:gen_ari:qcd_empty', 'One (or both) qcd objects are empty.')
     if equal_time(a,b)
         obj = a;
         val = b.data;
