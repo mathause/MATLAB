@@ -211,7 +211,7 @@ lst = dir(to);
 if isempty(lst)
     [success, message] = mkdir(to);
     if ~success
-        error('backup:mkdir', 'The backup folder ''%s'' could not be created.\n%s', curr_to, message)
+        error('backup:mkdir', 'The backup folder ''%s'' could not be created.\n%s', to, message)
     end
 end
 
