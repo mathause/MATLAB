@@ -1,5 +1,5 @@
-function [ pt ] = pathFinder_dnic( varargin )
-%PATHFINDER_DNIC returns absolute paths, relative to this file
+function [ pt ] = pathFinder_generic( varargin )
+%pathFinder_generic returns absolute paths, relative to this file
 %
 %Intended Use
 %   Returns the absolute path of folders relative to this file to make
@@ -7,27 +7,26 @@ function [ pt ] = pathFinder_dnic( varargin )
 %   computers). Works cross-platform.
 %
 %Syntax
-%   pt = pathFinder_dnic()
-%   pt = pathFinder_dnic(fb)
-%   pt = pathFinder_dnic('folder', ...)
-%   pt = pathFinder_dnic(fb, 'folder', ...)
+%   pt = pathFinder_generic()
+%   pt = pathFinder_generic(fb)
+%   pt = pathFinder_generic('folder', ...)
+%   pt = pathFinder_generic(fb, 'folder', ...)
 %
 %Usage
-%   pt = pathFinder_dnic() retutns absolute path going 'default_fb'
+%   pt = pathFinder_generic() retutns absolute path going 'default_fb'
 %       folders up the folder tree
-%   pt = pathFinder_dnic(fb) fb is the number of folders to go up the 
+%   pt = pathFinder_generic(fb) fb is the number of folders to go up the 
 %       file tree
 %       default: 1 (change in file)
-%   pt = pathFinder_dnic('folder', ...) appends 'folder' to the default
+%   pt = pathFinder_generic('folder', ...) appends 'folder' to the default
 %       path. Specify as many folders as needed.
-%   pt = pathFinder_dnic(fb, 'folder', ...) set the number of folders to go
-%       up the three and apppend 'folder'
+%   pt = pathFinder_generic(fb, 'folder', ...) set the number of folders to
+%       go up the three and apppend 'folder'
 %
 %Examples
-%   pt = pathFinder_dnic(0); %return path of this file
-%   pt = pathFinder_dnic(2);
-%   pt = pathFinder_dnic('data');
-%
+%   pt = pathFinder_generic(0); %return path of this file
+%   pt = pathFinder_generic(2);
+%   pt = pathFinder_generic('data');
 %
 %   Mathias Hauser @ ETHZ 04.04.2011
 %   Version 3
