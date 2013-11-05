@@ -1,24 +1,24 @@
 function [ varargout ] = profiler( fct,  varargin )
-%PROFILER for functions that need input (i.e. can not be run by 'F5')
+%PROFILER profile functions requiring input (i.e. can not be run by 'F5')
 %
 %Syntax
-%   profiler(fhandle, x1, ..., xn)
-%   profiler(fname, x1, ..., xn)
-%   [y1, y2, ...] = profiler(...)
-% 
+%   PROFILER(fhandle, x1, ..., xn)
+%   PROFILER(fname, x1, ..., xn)
+%   [y1, y2, ...] = PROFILER(...)
+%
 %Usage
-%   profiler(fhandle, x1, ..., xn) runs the profiler for the function given
+%   PROFILER(fhandle, x1, ..., xn) runs the PROFILER for the function given
 %       in fhandle using arguments x1 through xn. If fhandle needs no
 %       input, x1 through xn can be left out.
-%   profiler(fname, x1, ..., xn) dito, but fname is a quoted string 
+%   PROFILER(fname, x1, ..., xn) dito, but fname is a quoted string
 %       containing the name of the function that is to execute.
-%   [y1, y2, ...] = profiler(...) also returns output. If y1 is not given
+%   [y1, y2, ...] = PROFILER(...) also returns output. If y1 is not given
 %      the standard output is supressed.
 %
 %Examples
-%   profiler( @peaks )
-%   profiler( @std, rand(1000,1))
-%   Z = profiler( @peaks, 5 );
+%   PROFILER( @peaks )
+%   PROFILER( @std, rand(1000,1))
+%   Z = PROFILER( @peaks, 5 );
 %
 %Version History
 %   Mathias Hauser @ ETHZ
@@ -30,41 +30,49 @@ function [ varargout ] = profiler( fct,  varargin )
 %   2013.07.20  v1.6    moved profile off and error handling to end of fct
 %   2013.08.15  v1.7    use new isfunction fct, handling of function_handle
 %                       of scripts, doc
+%   2013.11.05  v1.8    introduced onCleanup object
+%
+%Known Issues
+%   when terminating input('promt', 's'); with CTRL + C try does not work
+%       correctly and the onCleanup object is not evaluated (i.e. profiling
+%       does not stop; this is not really an issue of the PROFILER but of 
+%       Matlab)
 %
 % See Also
 % profile | feval | evalin | isfunction
 
 exception = [];
 
+cleanupObj = onCleanup(@cleanup);
 
 if nargin == 1 && ~isfunction(fct) %determine if fct is a script
     if isa( fct, 'function_handle'), fct = func2str(fct); end
     profile on
     try
-        evalin( 'base', fct)    
+        evalin( 'base', fct)
     catch exception
     end
 else %its a function
-
+    
     profile on
     try
         if nargout == 0
             feval(fct, varargin{:});
         else
-            varargout = cell(1, nargout); 
+            varargout = cell(1, nargout);
             [varargout{:}] = feval(fct, varargin{:});
         end
     catch exception %still stop profiling and show profiler if an error occurs
     end
 end
 
-profile off
-profile viewer
+
 if ~isempty(exception)
     rethrow(exception)
 end
 
-
+    function cleanup
+        profile off
+        profile viewer
+    end
 end
-
-
