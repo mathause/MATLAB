@@ -71,7 +71,7 @@ attr = {'scalar', 'real', 'nonnegative'};
 validateattributes(status, {'numeric'}, attr, mfilename, 'status')
 validateattributes(total, {'numeric'}, attr, mfilename, 'total')
 
-validStrings = {'number', 'percent', 'pluses'};
+validStrings = {'number', 'percent', 'pluses', 'point_perc'};
 
 if ~any(strcmpi(method, validStrings)) %faster than validatestring
     error('status_string:nonval_string', 'method must be any of:\n %s', sprintf('''%s'' ', validStrings{:}))
@@ -118,6 +118,7 @@ end
 
 end
 
+
 function msg = number(status, total) %#ok<DEFNU>
 % 145 of 1253
 msg=sprintf('%i of %i', status,total); %create msg
@@ -128,6 +129,12 @@ function msg = percent(status, total) %#ok<DEFNU>
 msg=sprintf('%4.1f %%', status/total*100); %create msg
 end
 
+function msg = point_perc(status, total) %#ok<DEFNU>
+% .. 25 % -> ... 30 %
+n_points = ceil(status/total*9)+1;
+pt = repmat('.', 1, n_points);
+msg=sprintf('%s %4.1f %%', pt, status/total*100); %create msg
+end
 
 function msg = pluses(status, total) %#ok<DEFNU>
 % |++++       |
