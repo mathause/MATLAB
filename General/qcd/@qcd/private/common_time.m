@@ -1,10 +1,12 @@
 function [ time, hash ] = common_time( time )
-%COMMON_TIME Summary of this function goes here
-%   Detailed explanation goes here
+%COMMON_TIME assigns time to a common time (i.e. a handle)
+
+
+mlock;
 
 persistent qcd_time time_hash
 
-%mlock
+
 hash = [];
 if isempty(qcd_time)
     
@@ -55,7 +57,7 @@ function assign_time( IDX )
     qcd_time{IDX} = time;
     %obj.time = time;
     
-    time_hash{ IDX } = CalcMD5(time, [], 'Dec');
+    time_hash{IDX} = CalcMD5(time, [], 'Dec');
     
     
     time = qcd_time{IDX};

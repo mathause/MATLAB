@@ -1,22 +1,13 @@
-function [nelements,xcenters] = hist( varargin )
+function [nelements,xcenters] = hist(varargin)
 %HIST Summary of this function goes here
 %   Detailed explanation goes here
 
-
-tf = isqcd(varargin{:});
-
-assert( sum(tf) == 1, 'qcd:hist:only1qcdInp', 'Only one qcd input allowed')
-
-
-varargin{tf} = varargin{tf}.data;
-
+[cax, to_plot] = generic_graph(false, false, varargin{:});
 
 if nargout == 0
-    hist(varargin{:});
-elseif nargout == 1
-    nelements = hist(varargin{:});
-else
-    [nelements,xcenters] = hist(varargin{:});
+    hist(cax, to_plot{:});
+elseif nargout >= 1
+    [nelements,xcenters] = hist(cax, to_plot{:});
 end
 
 

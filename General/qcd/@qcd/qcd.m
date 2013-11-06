@@ -71,8 +71,8 @@ classdef qcd
 %         end
         
         
-        function obj = set.flag( obj, flag)
-            if isempty( obj.flag ); ci = false; else ci = true; end
+        function obj = set.flag(obj, flag)
+            if isempty(obj.flag); ci = false; else ci = true; end
 
             %obj.flag = flag;
             
