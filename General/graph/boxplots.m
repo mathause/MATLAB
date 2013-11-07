@@ -31,8 +31,13 @@ function [ h, AX ] = boxplots(varargin)
 %       plot the boxplots horizontally or vertically
 %   outliers: {false} | true
 %       plot outliers or not
-%   whisker: 1.5 | nonnegative number
+%   whisker: {1.5} | nonnegative number
 %       see below
+%   delta:  {1} | nonnegative number
+%       stretches the patch (iqr) by delta if the boxplots are more than
+%           '1' apart from each other (e.g. if POS is not [1 2 3] but
+%           [1 3 5], set delta to 2)
+%           
 %
 %Whiskers (from the MATLAB boxplot documentation)
 %   Maximum whisker length w. The default is a w of 1.5. Points are drawn
@@ -97,11 +102,12 @@ is_compact = opt.compact;
 plot_horz = strcmp(opt.orientation, 'horizontal');
 plot_outliers = opt.outliers;
 whisker = opt.whisker;
+delta = opt.delta;
 %end input parsing
 
 if is_compact
     patch_col = 'b';
-    patch_half_width = 0.33;
+    patch_half_width = 0.33*delta;
     patch_FaceAlpha = 1;
 
     line_width = 2;
@@ -109,7 +115,7 @@ if is_compact
     whis_lineSpec = 'b-';
 else
     patch_col = 'w';
-    patch_half_width = 0.33;
+    patch_half_width = 0.33*delta;
     patch_FaceAlpha = 1;
 
     line_width = 1;
@@ -181,14 +187,15 @@ if ~is_hold; hold off; end
 if plot_horz; ax = 'Y'; else ax = 'X'; end
 
 first_plt = strcmp(get(AXi, [ax, 'TickMode']), 'auto');
+dLim = 0.5 + 0.5*delta;
 if first_plt
     set(AXi, [ax 'Tick'], POS)
-    set(AXi, [ax 'Lim'], [floor(POS(1))-1 ceil(POS(end))+1])
+    set(AXi, [ax 'Lim'], [floor(POS(1))-dLim ceil(POS(end))+dLim])
 else
     Ticks = get(AXi, [ax 'Tick']);
     Ticks = union(Ticks, POS);
     set(AXi, [ax 'Tick'], Ticks)
-    set(AXi, [ax 'Lim'], [floor(Ticks(1)) - 1 ceil(Ticks(end)) + 1])
+    set(AXi, [ax 'Lim'], [floor(Ticks(1)) - dLim ceil(Ticks(end)) + dLim])
 end
 
 box on
@@ -258,8 +265,11 @@ addParamValue(p,'compact',false)
 addParamValue(p,'orientation', 'vertical')
 addParamValue(p,'outliers', false)
 addParamValue(p,'whisker', 1.5);
+addParamValue(p,'delta', 1);
 
 parse(p, ARGS{:})
+
+validateattributes(p.Results.delta, {'numeric'}, {'scalar', 'real', 'nonnegative'}, mfilename, 'delta')
 
 opt = p.Results;
 
