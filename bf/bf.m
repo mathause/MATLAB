@@ -10,7 +10,7 @@ function bf(code, verbose)
 %   BF('code') run the brainfuck program given in 'code'
 %   BF('source_file.bf') run the code given in the source file (see
 %      examples)
-%   BF(..., verbose) output the registerse at every step
+%   BF(..., verbose) output the registers at every step
 %
 %Example
 %   BF('>++++[>++++++<-]>-[[<+++++>>+<-]>-]<<[<]>>>>--.<<<-.>>>-.<.<.>---.<<+++.>>>++.<<---.[>]<<.')
@@ -67,7 +67,10 @@ function bf_switch(code, verbose)
 pos = 1; %position in code
 ptr = 1; %index (ptr) of current value
 values = 0; 
-
+l_code = length(code);
+l_values = 1;
+opening_paren = 0;
+closing_paren = 0;
 
 while true 
     
@@ -76,11 +79,12 @@ while true
         case '>'
             ptr = ptr + 1;
             %initiate new field
-            if length(values) < ptr
+            if l_values < ptr
                 values(ptr) = 0;
+                l_values = l_values + 1;
             end
         case '<'
-            assert(ptr>1, 'you cannno''t decrement pointer below 1')
+            assert(ptr>1, 'you canno''t decrement pointer below 1')
             ptr = ptr - 1;
         case '+'
             values(ptr) = values(ptr) + 1;
@@ -100,19 +104,32 @@ while true
             values(ptr) = double(res);
         case '['
             if values(ptr) == 0
-                pos = findClosingParen(code, pos);
+                if pos == opening_paren %only find closing_paren if changed
+                    pos = closing_paren;
+                else
+                    opening_paren = pos;
+                    pos = findClosingParen(code, pos);
+                    closing_paren = pos;
+                end
+                
             end 
             
         case ']'
             if values(ptr) ~= 0
-                pos = findOpeningParen(code, pos) - 1;
+                if pos == closing_paren
+                    pos = opening_paren;
+                else
+                    closing_paren = pos;
+                    pos = findOpeningParen(code, pos);
+                    opening_paren = pos;
+                end
             end
             
         otherwise
             fprintf('Unknown command (%s)', cmd);
     end
     
-if pos >= length(code)
+if pos >= l_code
     break
 else
     pos = pos + 1;
