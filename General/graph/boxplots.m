@@ -33,11 +33,13 @@ function [ h, AX ] = boxplots(varargin)
 %       plot outliers or not
 %   whisker: {1.5} | nonnegative number
 %       see below
-%   delta:  {1} | nonnegative number
+%   stretch:  {1} | nonnegative number
 %       stretches the patch (iqr) by delta if the boxplots are more than
 %           '1' apart from each other (e.g. if POS is not [1 2 3] but
 %           [1 3 5], set delta to 2)
-%           
+%   LineWidth:  {2|1} | nonnegative integer
+%           define the width of the lines of the plot (default for not 
+%           compact and compact plot, respectively)
 %
 %Whiskers (from the MATLAB boxplot documentation)
 %   Maximum whisker length w. The default is a w of 1.5. Points are drawn
@@ -74,8 +76,9 @@ function [ h, AX ] = boxplots(varargin)
 %
 %Tipps
 %   Labels
-%       in order to set the labels use (or 'YTickLabel')
+%       in order to set the labels use:
 %       set(gca,'XTickLabel', Labels)
+%       (or 'YTickLabel')
 %
 %   Legend
 %      to display a legend use:
@@ -88,6 +91,8 @@ function [ h, AX ] = boxplots(varargin)
 %   16.07.2013   mah@MCH   created
 %   26.08.2013   mah@MCH   documentation
 %   28.10.2013   mah@MCH   bugfixes (w=0), doc, ghost pts, empty outliers
+%   07.11.2013   mah@MCH   introduced delta to stretch patch
+%   06.12.2013   mah@MCH   added LineWidth, renamed delta to stretch
 %
 %See Also
 %boxplot | boxstats
@@ -102,12 +107,13 @@ is_compact = opt.compact;
 plot_horz = strcmp(opt.orientation, 'horizontal');
 plot_outliers = opt.outliers;
 whisker = opt.whisker;
-delta = opt.delta;
+stretch = opt.stretch;
+customLineWidth = opt.LineWidth;
 %end input parsing
 
 if is_compact
     patch_col = 'b';
-    patch_half_width = 0.33*delta;
+    patch_half_width = 0.33*stretch;
     patch_FaceAlpha = 1;
 
     line_width = 2;
@@ -115,14 +121,17 @@ if is_compact
     whis_lineSpec = 'b-';
 else
     patch_col = 'w';
-    patch_half_width = 0.33*delta;
+    patch_half_width = 0.33*stretch;
     patch_FaceAlpha = 1;
 
     line_width = 1;
     
     whis_lineSpec = 'k--';
 end
-
+if ~isempty(customLineWidth)
+    line_width = customLineWidth;
+end
+    
 hi = zeros(8, n_plots); %handles of the plotted objects
 
 is_hold = ishold;
@@ -187,7 +196,7 @@ if ~is_hold; hold off; end
 if plot_horz; ax = 'Y'; else ax = 'X'; end
 
 first_plt = strcmp(get(AXi, [ax, 'TickMode']), 'auto');
-dLim = 0.5 + 0.5*delta;
+dLim = 0.5 + 0.5*stretch;
 if first_plt
     set(AXi, [ax 'Tick'], POS)
     set(AXi, [ax 'Lim'], [floor(POS(1))-dLim ceil(POS(end))+dLim])
@@ -265,11 +274,12 @@ addParamValue(p,'compact',false)
 addParamValue(p,'orientation', 'vertical')
 addParamValue(p,'outliers', false)
 addParamValue(p,'whisker', 1.5);
-addParamValue(p,'delta', 1);
+addParamValue(p,'stretch', 1);
+addParamValue(p,'LineWidth', []);
 
 parse(p, ARGS{:})
 
-validateattributes(p.Results.delta, {'numeric'}, {'scalar', 'real', 'nonnegative'}, mfilename, 'delta')
+validateattributes(p.Results.stretch, {'numeric'}, {'scalar', 'real', 'nonnegative'}, mfilename, 'delta')
 
 opt = p.Results;
 
