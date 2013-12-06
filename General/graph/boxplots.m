@@ -108,6 +108,7 @@ plot_horz = strcmp(opt.orientation, 'horizontal');
 plot_outliers = opt.outliers;
 whisker = opt.whisker;
 stretch = opt.stretch;
+customLineWidth = opt.LineWidth;
 %end input parsing
 
 if is_compact
