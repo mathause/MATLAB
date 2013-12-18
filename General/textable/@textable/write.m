@@ -4,7 +4,9 @@ function [ output_args ] = write( obj )
 
 
 
-
+if isempty(obj.placement)
+    obj.placement = 'h!tbc';
+end
 
 [fileID, message] = fopen( obj.fullFile, 'W' );
 
@@ -20,7 +22,7 @@ if ~isempty(obj.TEX_root)
     wtf( ['%!TEX root = ' obj.TEX_root] );
 end
 
-wtf( '\begin{table}[h!tbc]' )
+wtf( ['\begin{table}[' obj.placement ']'] )
 wtf( '{' )
 wtf('\centering')
 
