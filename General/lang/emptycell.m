@@ -18,11 +18,11 @@ function tf = emptycell(A)
 %See Also
 %   isempty | cellfun
 
-assert( iscell(A), 'emptycell:inp_nt_cell', 'Input must be a cell')
+assert(iscell(A), 'emptycell:inp_nt_cell', 'Input must be a cell')
 
 
-if any( size(A) == 0)
+if any(size(A) == 0)
     tf = true;
 else
-    tf = cellfun( @isempty, A);
+    tf = cellfun(@isempty, A);
 end
