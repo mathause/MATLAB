@@ -25,7 +25,7 @@ function [ idx, names ] = find_def_par_db( param, varargin )
 %regexp
 
 if nargin == 1
-    global def_par_db
+    global def_par_db %#ok<TLEV>
     assert(~isempty(def_par_db), 'find_def_par_db:gl_empty', ...
         'def_par_db not defined as global variable')
 else
@@ -36,13 +36,18 @@ end
 
 
 name = {def_par_db.name};
-assb( name, 'names', param)
+
+ec = cellfun(@isempty, name);
+
+name = name(~ec);
+
 startIndex = regexp(name, param);
 
 tf = ~emptycell(startIndex);
 
+pt = find(~ec);
 
-idx_int = find(tf);
+idx_int = pt(tf);
 if ~isempty(idx_int)
     fprintf('Found:\n No Parameter\n-------------\n')
     for ii = idx_int
