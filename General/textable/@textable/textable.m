@@ -12,6 +12,8 @@ classdef textable
         
         table_spec
         
+        placement
+        
         n_col
         n_blines
         n_hlines

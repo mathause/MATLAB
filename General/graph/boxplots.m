@@ -29,7 +29,7 @@ function [ h, AX ] = boxplots(varargin)
 %       plot a compact version of the boxplots
 %   orientation: {'vertical'} | 'horizontal
 %       plot the boxplots horizontally or vertically
-%   outliers: {false} | true
+%   outliers: {true} | false
 %       plot outliers or not
 %   whisker: {1.5} | nonnegative number
 %       see below
@@ -93,7 +93,7 @@ function [ h, AX ] = boxplots(varargin)
 %   28.10.2013   mah@MCH   bugfixes (w=0), doc, ghost pts, empty outliers
 %   07.11.2013   mah@MCH   introduced delta to stretch patch
 %   06.12.2013   mah@MCH   added LineWidth, renamed delta to stretch
-%
+%   18.12.2013   mah@MCH   outlier = true as default
 %See Also
 %boxplot | boxstats
 
@@ -272,7 +272,7 @@ p = inputParser;
 
 addParamValue(p,'compact',false)
 addParamValue(p,'orientation', 'vertical')
-addParamValue(p,'outliers', false)
+addParamValue(p,'outliers', true)
 addParamValue(p,'whisker', 1.5);
 addParamValue(p,'stretch', 1);
 addParamValue(p,'LineWidth', []);
